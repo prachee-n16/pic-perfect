@@ -3,6 +3,7 @@ import asyncio
 from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
 from viam.components.camera import Camera
+from PIL import Image
 import json
 
 
@@ -26,6 +27,14 @@ async def main():
     # take a picture and send it to ML model for better accurcy
     my_camera = Camera.from_robot(robot=robot, name="cam")
     frame = await my_camera.get_image()
+
+    if frame is not None:
+        # Convert frame to a format that can be saved
+        file_path = "test_image.jpg"
+        with open(file_path, "wb") as f:
+            f.write(frame.data)
+    else:
+        print("Error cannot capture picture")
 
     print("picture is ", frame)
 
