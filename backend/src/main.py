@@ -47,7 +47,7 @@ async def main():
     robot = await connect()
 
     # peopleClassifier - need to upload this model onto that
-    peopleDetector = VisionClient.from_robot(robot, "peopleDetector")
+    person_detection = VisionClient.from_robot(robot, "person_detection")
 
     roverBase = Base.from_robot(robot, "viam_base")
     camera = Camera.from_robot(robot=robot, name="cam")
@@ -59,7 +59,10 @@ async def main():
     # take a picture and send it to ML model for better accurcy
     frame = await camera.get_image()
     # Get detections and stuff
-    subject = await peopleDetector.get_Detections(frame)
+    subject = await person_detection.get_Detections_from_camera(camera)
+
+    if not subject:
+        print("nothing detected :(")
 
     if frame is not None:
         # Convert frame to a format that can be saved
