@@ -1,0 +1,1 @@
+2023-09-16 15:15:42,368		[33;36mINFO[0m	viam.rpc.dial (dial.py:244)	Connecting to socket: /tmp/proxy-9NXWxqLf.sock	

@@ -1,5 +1,6 @@
 import asyncio
-
+import cv2
+import numpy as np
 from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
 from viam.components.camera import Camera
@@ -21,7 +22,7 @@ async def connect():
 
 # Check if this works?
 
-def leftOrRight(detections, midpoint):
+def leftOrRight(detections, midpoint, frame):
    largest_area = 0
    largest = Detection()
    if not detections:
@@ -32,10 +33,31 @@ def leftOrRight(detections, midpoint):
       if a > largest_area:
          a = largest_area
          largest = d
-   centerX = largest.x_min + largest.x_max/2
-   if centerX < midpoint-midpoint/6:
+   if frame is not None:
+        # Convert frame to a format that can be saved
+        file_path = "test_image.jpg"
+        with open(file_path, "wb") as f:
+            f.write(frame.data)
+        image = cv2.imread('test_image.jpg')
+        border_size = 10  # You can adjust this to your desired border width
+        border_color = (0, 255, 0)  # Color in BGR format (Green in this example)
+        bordered_image = cv2.copyMakeBorder(
+            image,
+            top=largest.y_max,
+            bottom=largest.y_min,
+            left=largest.x_min,
+            right=largest.x_max,
+            borderType=cv2.BORDER_CONSTANT,
+            value=border_color
+        )
+        cv2.imwrite('border_img.jpg', bordered_image)
+   else:
+        print("Error cannot capture picture")
+
+   centerX = (largest.x_min + largest.x_max)/2
+   if centerX < (midpoint-midpoint)/6:
       return 0 # on the left
-   if centerX > midpoint+midpoint/6:
+   if centerX > (midpoint+midpoint)/6:
       return 2 # on the right
    else:
       return 1  # basically centered
@@ -64,15 +86,12 @@ async def is_person_in_center_frame(camera, detector):
 
 
 async def main():
-    spinNum = 10         # when turning, spin the motor this much
-    straightNum = 300    # when going straight, spin motor this much
     numCycles = 200      # run the loop X times
     vel = 500            # go this fast when moving motor
     robot = await connect()
 
     # peopleClassifier - need to upload this model onto that
     peopleDetector = VisionClient.from_robot(robot, "person-detection")
-    print(peopleDetector)
 
     roverBase = Base.from_robot(robot, "viam_base")
     camera = Camera.from_robot(robot=robot, name="cam2")
@@ -80,38 +99,32 @@ async def main():
 
     print("Robot Connected!")
     print("Resources:")
-    print(robot.resource_names)
+    # print(robot.resource_names)
     # Main loop. Detect the ball, determine if it's on the left or right, and head that way.
     # Repeat this for until we have a good picture
+    peopleDetected = []
     for i in range(numCycles):
-      detections = await peopleDetector.get_detections_from_camera("cam2")
-      # take a picture and send it to ML model for better accurcy
-      frame = await camera.get_image(mime_type="image/jpeg")
-      answer = leftOrRight(detections, frame.size[0]/2)
-      if answer == 0:
-         print("left")
-         await roverBase.spin(angle=63, velocity=vel)     # CCW is positive
-         await roverBase.move_straight(distance=500,velocity=vel)
-      if answer == 1:
-         print("center")
-         await roverBase.move_straight(distance=500,velocity=vel)
-      if answer == 2:
-         print("right")
-         await roverBase.spin(angle=30, velocity=vel)
-      # If nothing is detected, nothing moves
+        detections = await peopleDetector.get_detections_from_camera("cam2")
+        for detection in detections:
+            if(detection.class_name == "0"):
+                peopleDetected.append(detection)
+                print(f'people detected {peopleDetected}')
 
-
-    # Get detections and stuff
-    subject = await peopleDetector.get_detections(frame)
-    print(subject)
-
-    if frame is not None:
-        # Convert frame to a format that can be saved
-        file_path = "test_image.jpg"
-        with open(file_path, "wb") as f:
-            f.write(frame.data)
-    else:
-        print("Error cannot capture picture")
+        # take a picture and send it to ML model for better accurcy
+        frame = await camera.get_image()
+        frame1= await camera.get_image(mime_type="image/jpeg")
+        answer = leftOrRight(peopleDetected, frame1.size[0]/2, frame)
+        if answer == 0:
+            print("left")
+            await roverBase.spin(angle=5, velocity=vel)     # CCW is positive
+            await roverBase.move_straight(distance=600,velocity=vel)
+        if answer == 1:
+            print("center")
+            await roverBase.move_straight(distance=600,velocity=vel)
+        if answer == 2:
+            print("right")
+            await roverBase.spin(angle=-5, velocity=vel)
+        # If nothing is detected, nothing moves
 
     # print("picture is ", frame)
 
