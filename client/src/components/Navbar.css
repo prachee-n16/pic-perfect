@@ -1,0 +1,10 @@
+.navbar {
+  margin: 0;
+  padding: 0;
+}
+
+.divider {
+  border-top: 0.5px solid #121212; /* Border style */
+  margin: 0; /* Spacing above and below the divider */
+  padding: 0;
+}
