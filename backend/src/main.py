@@ -1,5 +1,5 @@
 import asyncio
-import Rover
+from Rover import Rover
 from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
 from viam.components.camera import Camera
@@ -61,8 +61,8 @@ async def main():
     print(robot.resource_names)
 
     # Get detections and stuff
-    subject = await peopleDetector.get_detections(frame)
-    print(subject)
+    # subject = await peopleDetector.get_detections(frame)
+    # print(subject)
 
     # close the robot when you're done!
     del my_rover
