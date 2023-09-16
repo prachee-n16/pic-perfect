@@ -3,6 +3,7 @@ import asyncio
 from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
 from viam.components.camera import Camera
+from viam.components.base import Base
 from viam.services.vision import VisionClient
 from PIL import Image
 import json
@@ -47,7 +48,7 @@ async def main():
     robot = await connect()
 
     # peopleClassifier - need to upload this model onto that
-    peopleDetector = VisionClient.from_robot(robot, "peopleDetector")
+    peopleDetector = VisionClient.from_robot(robot, "person-detection")
 
     roverBase = Base.from_robot(robot, "viam_base")
     camera = Camera.from_robot(robot=robot, name="cam")
@@ -59,7 +60,8 @@ async def main():
     # take a picture and send it to ML model for better accurcy
     frame = await camera.get_image()
     # Get detections and stuff
-    subject = await peopleDetector.get_Detections(frame)
+    subject = await peopleDetector.get_detections(frame)
+    print(subject)
 
     if frame is not None:
         # Convert frame to a format that can be saved
@@ -69,7 +71,7 @@ async def main():
     else:
         print("Error cannot capture picture")
 
-    print("picture is ", frame)
+    # print("picture is ", frame)
 
     # get the parameters for a better picture clicked, so the web
     # cam can click a better one
