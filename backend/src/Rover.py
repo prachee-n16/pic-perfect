@@ -5,7 +5,7 @@ from viam.components.base import Base
 class Rover:
     def __init__(self, robot):
         self.robot = robot
-        self.camera = Camera.from_robot(robot=robot, name="cam")
+        self.camera = Camera.from_robot(robot=robot, name="cam2")
         self.roverBase = Base.from_robot(robot, "viam_base")
 
     async def capture_image(self, image_count):
@@ -14,8 +14,8 @@ class Rover:
             frame = await self.camera.get_image()
             if frame is not None:
                 # Convert frame to a format that can be saved
-                file_path = f"../images/test_image_{i}.jpg"
-                # await self.roverBase.spin(velocity=100, angle=63)
+                file_path = f"../../images/test_image_{i}.jpg"
+                await self.roverBase.spin(velocity=100, angle=63)
                 with open(file_path, "wb") as f:
                     f.write(frame.data)
             else:
