@@ -53,8 +53,10 @@ def leftOrRight(face_cascade, midpoint, frame_size, withinRange):
     (x, y, w, h) = largest
     # Need to test this stop logic here, will this even work?
     if w >= min_face_size and h >= min_face_size:
-        x_within_range = x >= 0.15 * frame_size[0] and x + w <= 0.85 * frame_size[0]
-        y_within_range = y >= 0.15 * frame_size[1] and y + h <= 0.6 * frame_size[1]
+        x_within_range = x >= 0.15 * \
+            frame_size[0] and x + w <= 0.85 * frame_size[0]
+        y_within_range = y >= 0.15 * \
+            frame_size[1] and y + h <= 0.6 * frame_size[1]
         # print(x_within_range, y_within_range)
         # print(0.01 *
         #       frame_size[0])
@@ -135,7 +137,8 @@ async def main():
             x, y, c = refined_frame.shape
 
             # Produces the hand framework overlay ontop of the hand
-            result = hands.process(cv2.cvtColor(refined_frame, cv2.COLOR_BGR2RGB))
+            result = hands.process(cv2.cvtColor(
+                refined_frame, cv2.COLOR_BGR2RGB))
 
             className = ""
 
@@ -238,14 +241,14 @@ async def main():
                     img = await my_rover.camera.get_image()
                     if img is not None:
                         current_date = datetime.now().strftime("%Y%m%d_%H%M%S")
-                        with open(f"captures/capture_{current_date}.jpeg", "wb") as f:
+                        with open(f"../../client/src/captures/capture_{current_date}.jpeg", "wb") as f:
                             f.write(img.data)
                     else:
                         print("Error capturing image.")
                         break
                     time.sleep(1)
                 evaluateImages(3)
-                
+
     # close the robot when you're done!
     del my_rover
 

@@ -1,3 +1,0 @@
-captures/capture_20230917_062441.jpeg,corrected/capture_20230917_062441_enhanced.jpeg
-captures/capture_20230917_062442.jpeg,corrected/capture_20230917_062442_enhanced.jpeg
-captures/capture_20230917_062443.jpeg,corrected/capture_20230917_062443_enhanced.jpeg

@@ -11,7 +11,7 @@ fileNames = []
 modifyOrigImages = []
 openedImages = []
 imageFlags = []
-imagesPath = "./captures/"
+imagesPath = "../../client/src/captures/"
 threshold = 100
 fileNames = os.listdir(imagesPath)
 
@@ -90,7 +90,8 @@ def evaluateImages(length):
             image2 = cv2.convertScaleAbs(img, alpha=alpha, beta=beta)
             hsv_image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
             saturation_factor = 1.5  # Adjust this value to change saturation
-            hsv_image[:, :, 1] = np.clip(hsv_image[:, :, 1] * saturation_factor, 0, 255)
+            hsv_image[:, :, 1] = np.clip(
+                hsv_image[:, :, 1] * saturation_factor, 0, 255)
             image2 = cv2.cvtColor(hsv_image, cv2.COLOR_HSV2BGR)
             # Define a matrix for color correction (can be a custom matrix)
             color_correction_matrix = np.array(
@@ -98,9 +99,11 @@ def evaluateImages(length):
             )
 
             image2 = cv2.transform(img, color_correction_matrix)
-            correctedFile = "corrected/" + fileName[:-5] + "_enhanced.jpeg"
+            correctedFile = "../../client/src/corrected/" + \
+                fileName[:-5] + "_enhanced.jpeg" + "\n"
             cv2.imwrite(correctedFile, image2)
-            imageFlags.append(["captures/" + fileName, correctedFile])
+            imageFlags.append(
+                ["../../client/src/captures/" + fileName, correctedFile + "\n"])
             cv2.waitKey(0)
             currentImgFlags = []
             # closing all open windows
