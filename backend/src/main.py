@@ -240,12 +240,12 @@ async def main():
                         current_date = datetime.now().strftime("%Y%m%d_%H%M%S")
                         with open(f"captures/capture_{current_date}.jpeg", "wb") as f:
                             f.write(img.data)
-                        evaluateImages(3)
                     else:
                         print("Error capturing image.")
                         break
                     time.sleep(1)
-
+                evaluateImages(3)
+                
     # close the robot when you're done!
     del my_rover
 
