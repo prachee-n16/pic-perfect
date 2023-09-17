@@ -13,7 +13,7 @@ from viam.rpc.dial import Credentials, DialOptions
 
 from Rover import Rover
 
-VELOCITY = 250
+VELOCITY = 1000
 
 
 async def connect():
@@ -52,8 +52,8 @@ def leftOrRight(face_cascade, midpoint, frame_size, withinRange):
     (x, y, w, h) = largest
     # Need to test this stop logic here, will this even work?
     if w >= min_face_size and h >= min_face_size:
-        x_within_range = x <= 0.10 * frame_size[0] and x + w >= 0.90 * frame_size[0]
-        y_within_range = y <= 0.10 * frame_size[1] and y + h >= 0.90 * frame_size[1]
+        x_within_range = x >= 0.15 * frame_size[0] and x + w <= 0.85 * frame_size[0]
+        y_within_range = y >= 0.25 * frame_size[1] and y + h <= 0.75 * frame_size[1]
         # print(x_within_range, y_within_range)
         # print(0.01 *
         #       frame_size[0])
@@ -71,7 +71,7 @@ def leftOrRight(face_cascade, midpoint, frame_size, withinRange):
         return [2]
     elif y + h >= 0.90 * frame_size[1]:
         return [3]
-    else:
+    elif y <= 0.80 * frame_size[1]:
         return [1]
 
 
@@ -176,19 +176,19 @@ async def main():
                     # CCW is positive
                     pastMove = "left"
                     await my_rover.base.spin(angle=5, velocity=VELOCITY)
-                    await my_rover.base.move_straight(distance=5, velocity=VELOCITY)
+                    await my_rover.base.move_straight(distance=50, velocity=VELOCITY)
                 elif answer[0] == 1:
                     # print("center")
                     pastMove = "center"
-                    await my_rover.base.move_straight(distance=10, velocity=VELOCITY)
+                    await my_rover.base.move_straight(distance=100, velocity=VELOCITY)
                 elif answer[0] == 2:
                     # print("right")
                     pastMove = "right"
                     await my_rover.base.spin(angle=-5, velocity=VELOCITY)
-                    await my_rover.base.move_straight(distance=5, velocity=VELOCITY)
+                    await my_rover.base.move_straight(distance=50, velocity=VELOCITY)
                 elif answer[0] == 3:
-                    pastMove = "center"
-                    await my_rover.base.move_straight(distance=-10, velocity=VELOCITY)
+                    pastMove = "backward"
+                    await my_rover.base.move_straight(distance=-100, velocity=VELOCITY)
                 elif answer[0] == -1:
                     if pastMove == "":
                         print("Randomly moving to look for objects.")
@@ -198,11 +198,11 @@ async def main():
                         )
                         if random_movement == "forward":
                             await my_rover.base.move_straight(
-                                distance=10, velocity=VELOCITY
+                                distance=100, velocity=VELOCITY
                             )
                         elif random_movement == "backward":
                             await my_rover.base.move_straight(
-                                distance=-10, velocity=VELOCITY
+                                distance=-100, velocity=VELOCITY
                             )
                         elif random_movement == "left":
                             await my_rover.base.spin(angle=5, velocity=VELOCITY)
@@ -216,12 +216,12 @@ async def main():
                         pastMove = ""
                     elif pastMove == "center":
                         await my_rover.base.move_straight(
-                            distance=-10, velocity=VELOCITY
+                            distance=-100, velocity=VELOCITY
                         )
                         pastMove = ""
                     else:
                         await my_rover.base.move_straight(
-                            distance=10, velocity=VELOCITY
+                            distance=100, velocity=VELOCITY
                         )
                         pastMove = ""
             else:
