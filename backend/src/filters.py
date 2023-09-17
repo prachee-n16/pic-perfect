@@ -87,7 +87,7 @@ def evaluateImages(length):
                                         [0.1, 0.2, 1.4]])
 
             image2 = cv2.transform(img, color_correction_matrix)
-            correctedFile = imagesPath + "corrected/capture_"+str(i)+"enhanced.jpeg"
+            correctedFile = imagesPath + "corrected/"+fileName+"_enhanced.jpeg"
             cv2.imwrite(correctedFile,image2)
             imageFlags.append([fileName, correctedFile])
             cv2.waitKey(0) 
