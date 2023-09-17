@@ -7,6 +7,7 @@ from viam.rpc.dial import Credentials, DialOptions
 from viam.components.camera import Camera
 from viam.components.base import Base
 import json
+import random  # Import the random module
 
 
 async def connect():
@@ -19,8 +20,8 @@ async def connect():
     return await RobotClient.at_address("htn-main.3o4e4wpz0f.viam.cloud", opts)
 
 
-def leftOrRight(face_cascade, midpoint, frame_size, isGoodPicture):
-    min_face_size = 100  # Adjust this based on your requirements
+def leftOrRight(face_cascade, midpoint, frame_size, withinRange):
+    min_face_size = 50  # Adjust this based on your requirements
 
     largest_area = 0
     largest = ()
@@ -45,8 +46,15 @@ def leftOrRight(face_cascade, midpoint, frame_size, isGoodPicture):
     cv2.imwrite('border_img.jpeg', image)
 
     (x, y, w, h) = largest
+    # Need to test this stop logic here, will this even work?
     if w >= min_face_size and h >= min_face_size:
-        isGoodPicture = 1
+        x_within_range = x <= 0.2 * \
+            frame_size[0] and x + w >= 0.95 * frame_size[0]
+        y_within_range = y <= 0.2 * \
+            frame_size[1] or y + h >= 0.95 * frame_size[1]
+        print(x_within_range, y_within_range)
+        if x_within_range and y_within_range:
+            withinRange = 1
 
     cx = (x + (x + w))/2
     if (cx < (midpoint - (midpoint/6))):
@@ -59,7 +67,7 @@ def leftOrRight(face_cascade, midpoint, frame_size, isGoodPicture):
 
 async def main():
     numCycles = 200      # run the loop X times
-    vel = 100            # go this fast when moving motor
+    vel = 250            # go this fast when moving motor
     robot = await connect()
 
     roverBase = Base.from_robot(robot, "viam_base")
@@ -77,6 +85,7 @@ async def main():
     # Add the logic where this rover should keep moving until
     # it sees that person is not in frame
     for i in range(numCycles):
+        pastMove = ""
         # Let's write a code which checks if the area of the face that was recognized makes up for a good chunk compared to frame ratio
         # Then, we will see whether or not this is near center of screen
         # If these two things are fulfilled, we can keep going.
@@ -87,22 +96,50 @@ async def main():
             file_path = "img.jpeg"
             with open(file_path, "wb") as f:
                 f.write(frame.data)
-        isGoodPicture = 0
+        withinRange = 0
         answer = leftOrRight(
-            face_cascade, frame1.size[0]/2, frame1.size, isGoodPicture)
-        if answer[0] == 0:
-            # print("left")
-            await roverBase.spin(angle=5, velocity=vel)     # CCW is positive
-            await roverBase.move_straight(distance=200, velocity=vel)
-        elif answer[0] == 1:
-            # print("center")
-            await roverBase.move_straight(distance=200, velocity=vel)
-        elif answer[0] == 2:
-            # print("right")
-            await roverBase.spin(angle=-5, velocity=vel)
-        elif answer[0] == -1:
-            await roverBase.move_straight(distance=-200, velocity=vel)
-
+            face_cascade, frame1.size[0]/2, frame1.size, withinRange)
+        if withinRange != 1:
+            if answer[0] == 0:
+                # print("left")
+                # CCW is positive
+                pastMove = "left"
+                await roverBase.spin(angle=5, velocity=vel)
+                await roverBase.move_straight(distance=100, velocity=vel)
+            elif answer[0] == 1:
+                # print("center")
+                pastMove = "center"
+                await roverBase.move_straight(distance=200, velocity=vel)
+            elif answer[0] == 2:
+                # print("right")
+                pastMove = "right"
+                await roverBase.spin(angle=-5, velocity=vel)
+                await roverBase.move_straight(distance=100, velocity=vel)
+            elif answer[0] == -1:
+                if (pastMove == ""):
+                    print("Randomly moving to look for objects.")
+                    # Generate random movements (example: forward, backward, left, right)
+                    random_movement = random.choice(
+                        ["forward", "backward", "left", "right"])
+                    if random_movement == "forward":
+                        await roverBase.move_straight(distance=200, velocity=vel)
+                    elif random_movement == "backward":
+                        await roverBase.move_straight(distance=-200, velocity=vel)
+                    elif random_movement == "left":
+                        await roverBase.spin(angle=5, velocity=vel)
+                    elif random_movement == "right":
+                        await roverBase.spin(angle=-5, velocity=vel)
+                elif (pastMove == "right"):
+                    await roverBase.spin(angle=5, velocity=vel)
+                    pastMove = ""
+                elif (pastMove == "left"):
+                    await roverBase.spin(angle=-5, velocity=vel)
+                    pastMove = ""
+                elif (pastMove == "center"):
+                    pastMove = ""
+        else:
+            print('STOP!')
+            await base.stop()
         # If nothing is detected, nothing moves
 
     # print("picture is ", frame)
