@@ -2,9 +2,8 @@ import asyncio
 from Rover import Rover
 from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
-from viam.components.camera import Camera
-from viam.components.base import Base
 from viam.services.vision import VisionClient
+from hand_recognition import hand_detection
 import json
 
 
@@ -47,18 +46,17 @@ async def is_person_in_center_frame(camera, detector):
 
 async def main():
     robot = await connect()
-
     # Call to the rover class
     my_rover = Rover(robot)
-
-    # take pictures and send it to ML model for better accurcy
-    frame = await my_rover.capture_image(5)
-    # peopleClassifier - need to upload this model onto that
-    peopleDetector = VisionClient.from_robot(robot, "person-detection")
-
     print("Robot Connected!")
     print("Resources:")
     print(robot.resource_names)
+    await hand_detection(my_rover)
+
+    # take pictures and send it to ML model for better accurcy
+    # frame = await my_rover.capture_image(5)
+    # peopleClassifier - need to upload this model onto that
+    peopleDetector = VisionClient.from_robot(robot, "person-detection")
 
     # Get detections and stuff
     # subject = await peopleDetector.get_detections(frame)
