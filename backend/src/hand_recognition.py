@@ -70,9 +70,7 @@ async def hand_detection(rover):
                     prediction = model.predict([Landmarks])
                     classID = np.argmax(prediction)
                     className = classNames[classID]
-            file_path = "../../images/test_image_hand_recognition.jpg"
-            with open(file_path, "wb") as f:
-                f.write(refined_frame.data)
+
             if className == "thumbs up":
                 print("Time to start capturing pictures!")
                 break
