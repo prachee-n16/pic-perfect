@@ -8,6 +8,7 @@ import random
 import tensorflow as tf
 import time
 
+from datetime import datetime
 from tensorflow.keras.models import load_model
 from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
@@ -227,13 +228,16 @@ async def main():
                 for _ in range(5):
                     time.sleep(1)
                     await my_rover.base.stop()
-                img = await my_rover.camera.get_image()
-                if img is not None:
-                    with open("capture.jpeg", "wb") as f:
-                        f.write(img.data)
-                else:
-                    print("Error capturing image.")
-                    break
+                for _ in range(3):
+                    img = await my_rover.camera.get_image()
+                    if img is not None:
+                        current_date = datetime.now().strftime("%Y%m%d_%H%M%S")
+                        with open(f"captures/capture_{current_date}.jpeg", "wb") as f:
+                            f.write(img.data)
+                    else:
+                        print("Error capturing image.")
+                        break
+                    time.sleep(1)
 
     # close the robot when you're done!
     del my_rover
