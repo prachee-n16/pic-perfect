@@ -1,4 +1,4 @@
-##💡 Inspiration
+## 💡Inspiration
 
 Are you a shutterbug, always trying to capture the world in photographs but forgetting to live in the moment? Do you find it difficult and unrewarding to take staged photos? Maybe you're someone who is often forced behind the lens in their social circles, being overlooked by the fact that you too deserve some nice pictures. 
 
@@ -7,11 +7,11 @@ Or perhaps you relate to @annaclendening...
 
 Our point is everyone has been a victim of a bad photo, of having the joy sucked out of photography. With pic-perfect, we aim to provide people with the best solution for effortlessly capturing their moments, ensuring that every shot is a keeper. Our robot will independently follow your movements and employ a pre-trained facial detection algorithm to keep your face in focus. Whenever you feel the moment is perfect, simply signal your approval with a thumbs-up gesture.
 
-## 🔍 What it does
+## 🔍  What it does
 
 The pic-perfect is our friendly robot companion. It follows you wherever you go, using our backend facial detection model. With just a thumbs-up signal, it meticulously captures pictures of you and adds filters to create the most perfectly crafted portraits. These enhanced images are then displayed on a web app, with the intention of later storing them on a cloud service. The facial detection model is configured to position the robot at the proper angle and distance to center-align the person within the frame. Additionally, we utilize a hand gesture recognition algorithm to signal the robot when to begin capturing pictures.
 
-## ⚙️ Our Tech Stack
+##  ⚙️ Our Tech Stack
 
 ![](https://imgur.com/a/OJ6PuLP.png)
 - **Hardware**: The robot was built using the Viam Rover Kit and Raspberry Pi 4. We mounted our own webcam for better positioning of the camera. We had initially planned to 3D print a camera stand to achieve a better camera perspective. However, due to unforeseen challenges and time constraints, we were unable to continue with this concept.
