@@ -6,7 +6,7 @@ import numpy as np
 import random
 import time
 
-from filters import createArray, evaluateImages
+from filters import evaluateImages
 from datetime import datetime
 from tensorflow.keras.models import load_model
 from viam.robot.client import RobotClient
@@ -18,7 +18,7 @@ VELOCITY = 1000
 
 
 async def connect():
-    with open("./key.json", "r") as f:
+    with open("../key.json", "r") as f:
         payload = json.load(f)["payload"]
     creds = Credentials(type="robot-location-secret", payload=payload)
     opts = RobotClient.Options(
@@ -96,7 +96,7 @@ async def main():
     camera = my_rover.camera
 
     # intiate model
-    model = load_model("./backend/models/mp_hand_gesture")
+    model = load_model("../src/mp_hand_gesture")
     file = open("gesture.names", "r")
     classNames = file.read().split("\n")
     file.close()
@@ -239,8 +239,7 @@ async def main():
                         current_date = datetime.now().strftime("%Y%m%d_%H%M%S")
                         with open(f"captures/capture_{current_date}.jpeg", "wb") as f:
                             f.write(img.data)
-                        createArray(3)
-                        evaluateImages(3)  
+                        evaluateImages(3)
                     else:
                         print("Error capturing image.")
                         break
