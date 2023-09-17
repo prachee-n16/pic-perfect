@@ -54,7 +54,7 @@ def leftOrRight(face_cascade, midpoint, frame_size, withinRange):
     # Need to test this stop logic here, will this even work?
     if w >= min_face_size and h >= min_face_size:
         x_within_range = x >= 0.15 * frame_size[0] and x + w <= 0.85 * frame_size[0]
-        y_within_range = y >= 0.25 * frame_size[1] and y + h <= 0.75 * frame_size[1]
+        y_within_range = y >= 0.15 * frame_size[1] and y + h <= 0.6 * frame_size[1]
         # print(x_within_range, y_within_range)
         # print(0.01 *
         #       frame_size[0])
@@ -70,9 +70,9 @@ def leftOrRight(face_cascade, midpoint, frame_size, withinRange):
         return [0]
     if cx > (midpoint + (midpoint / 6)):
         return [2]
-    elif y + h >= 0.90 * frame_size[1]:
+    elif y <= 0.15 * frame_size[1]:
         return [3]
-    elif y <= 0.80 * frame_size[1]:
+    elif y + h >= 0.60 * frame_size[1]:
         return [1]
 
 
