@@ -1,0 +1,9 @@
+capture_20230917_053230.jpeg,./corrected/capture_20230917_053230.jpeg_enhanced.jpeg
+capture_20230917_053229.jpeg,./corrected/capture_20230917_053229.jpeg_enhanced.jpeg
+capture_20230917_053231.jpeg,./corrected/capture_20230917_053231.jpeg_enhanced.jpeg
+capture_20230917_053230.jpeg,./corrected/capture_20230917_053230.jpeg_enhanced.jpeg
+capture_20230917_053229.jpeg,./corrected/capture_20230917_053229.jpeg_enhanced.jpeg
+capture_20230917_053231.jpeg,./corrected/capture_20230917_053231.jpeg_enhanced.jpeg
+capture_20230917_053230.jpeg,./corrected/capture_20230917_053230.jpeg_enhanced.jpeg
+capture_20230917_053229.jpeg,./corrected/capture_20230917_053229.jpeg_enhanced.jpeg
+capture_20230917_053231.jpeg,./corrected/capture_20230917_053231.jpeg_enhanced.jpeg

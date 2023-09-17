@@ -74,6 +74,7 @@ def leftOrRight(face_cascade, midpoint, frame_size, withinRange):
         return [3]
     elif y + h >= 0.60 * frame_size[1]:
         return [1]
+    return [-1]
 
 
 async def main():

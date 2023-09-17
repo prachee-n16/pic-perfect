@@ -11,10 +11,9 @@ fileNames = []
 modifyOrigImages = []
 openedImages = []
 imageFlags = []
-imagesPath = "../src/captures/"
+imagesPath = "./captures/"
 threshold = 100
 fileNames = os.listdir(imagesPath)
-print(fileNames)
 
 
 def variance_of_laplacian(img2):
@@ -37,6 +36,8 @@ def readImages(index):
 
 
 def evaluateImages(length):
+    fileNames = os.listdir(imagesPath)
+    print(fileNames)
     with open("imagesInfo.txt", "w") as csvfile:
         csvwriter = csv.writer(csvfile)
         # criteria: blur, contrast, sharpness, and color balance
@@ -97,9 +98,9 @@ def evaluateImages(length):
             )
 
             image2 = cv2.transform(img, color_correction_matrix)
-            correctedFile = imagesPath + "corrected/" + fileName + "_enhanced.jpeg"
+            correctedFile = "./corrected/" + fileName + "_enhanced.jpeg"
             cv2.imwrite(correctedFile, image2)
-            imageFlags.append([fileName, correctedFile])
+            imageFlags.append(["./captures/" + fileName, correctedFile])
             cv2.waitKey(0)
             currentImgFlags = []
             # closing all open windows
