@@ -2,6 +2,7 @@
 #Import the necessary libraries
 import cv2
 import csv
+import os
 import matplotlib.pyplot as plt
 from skimage.exposure import is_low_contrast
 import numpy as np
@@ -10,8 +11,9 @@ fileNames = []
 modifyOrigImages = []
 openedImages = []
 imageFlags = []
-imagesPath = "./backend/src/images/"
+imagesPath = "./backend/src/captures/"
 threshold = 100
+fileNames = os.listdir(imagesPath)
 def variance_of_laplacian(img2):
     # compute the Laplacian of the image and then return the focus
     # measure, which is simply the variance of the Laplacian
@@ -23,20 +25,17 @@ def BGR2RGB(BGR_img):
     rgb_image = cv2.cvtColor(BGR_img, cv2.COLOR_BGR2RGB)
     return rgb_image
     
-def createArray(length):
-    for x in range(length):
-        fileNames.append("img"+str(x)+".jpeg")
-        readImages(x)
 # read the input images into input array
 def readImages(index):
-    openedImages.append(cv2.imread(imagesPath + "img"+str(index)+".jpeg"))
+    for file in fileNames:
+        openedImages.append(cv2.imread(file))
     
 def evaluateImages(length):
     with open("imagesInfo.txt", 'w') as csvfile:
         csvwriter = csv.writer(csvfile)
         # criteria: blur, contrast, sharpness, and color balance
         for i in range(length):
-            fileName = imagesPath + "/img"+ str(i) +".jpeg"
+            fileName = fileNames[i]
             currentImgFlags = []
             img = cv2.imread(fileName)
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -88,7 +87,7 @@ def evaluateImages(length):
                                         [0.1, 0.2, 1.4]])
 
             image2 = cv2.transform(img, color_correction_matrix)
-            correctedFile = imagesPath + "corrected/img"+str(i)+"enhanced.jpeg"
+            correctedFile = imagesPath + "corrected/capture_"+str(i)+"enhanced.jpeg"
             cv2.imwrite(correctedFile,image2)
             imageFlags.append([fileName, correctedFile])
             cv2.waitKey(0) 
@@ -97,8 +96,7 @@ def evaluateImages(length):
             cv2.destroyAllWindows() 
         csvwriter.writerows(imageFlags)
 
-createArray(10)
-evaluateImages(len(fileNames))
+
     
     
     
