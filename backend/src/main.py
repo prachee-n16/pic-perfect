@@ -14,7 +14,6 @@ from viam.rpc.dial import Credentials, DialOptions
 from viam.services.vision import VisionClient
 
 from Rover import Rover
-from hand_recognition import hand_detection
 
 VELOCITY = 250
 
