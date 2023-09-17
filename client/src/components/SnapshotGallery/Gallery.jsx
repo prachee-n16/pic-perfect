@@ -8,8 +8,12 @@ const SelectedImageContext = createContext();
 const Gallery = () => {
   // Define the selectedImage state using useState
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isEnhanced, setEnhancedMode] = useState(0);
+
   return (
-    <SelectedImageContext.Provider value={{ selectedImage, setSelectedImage }}>
+    <SelectedImageContext.Provider
+      value={{ selectedImage, setSelectedImage, isEnhanced, setEnhancedMode }}
+    >
       <div
         style={{
           display: "grid",
