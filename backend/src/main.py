@@ -1,18 +1,15 @@
 import asyncio
 import cv2
-import imutils
 import json
 import mediapipe as mp
 import numpy as np
 import random
-import tensorflow as tf
 import time
 
 from datetime import datetime
 from tensorflow.keras.models import load_model
 from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
-from viam.services.vision import VisionClient
 
 from Rover import Rover
 
@@ -46,19 +43,17 @@ def leftOrRight(face_cascade, midpoint, frame_size, withinRange):
     # Draw rectangle around the faces
     for face in faces:
         (x, y, w, h) = face
-        a = w*h
+        a = w * h
         if a > largest_area:
             largest_area = a
             largest = face
-        cv2.rectangle(image, (x, y), (x+w, y+h), (255, 0, 0), 2)
+        cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
     (x, y, w, h) = largest
     # Need to test this stop logic here, will this even work?
     if w >= min_face_size and h >= min_face_size:
-        x_within_range = x <= 0.10 * \
-            frame_size[0] and x + w >= 0.90 * frame_size[0]
-        y_within_range = y <= 0.10 * \
-            frame_size[1] and y + h >= 0.90 * frame_size[1]
+        x_within_range = x <= 0.10 * frame_size[0] and x + w >= 0.90 * frame_size[0]
+        y_within_range = y <= 0.10 * frame_size[1] and y + h >= 0.90 * frame_size[1]
         # print(x_within_range, y_within_range)
         # print(0.01 *
         #       frame_size[0])
@@ -69,10 +64,10 @@ def leftOrRight(face_cascade, midpoint, frame_size, withinRange):
         if x_within_range and y_within_range:
             withinRange[0] = 1
 
-    cx = (x + (x + w))/2
-    if (cx < (midpoint - (midpoint/6))):
+    cx = (x + (x + w)) / 2
+    if cx < (midpoint - (midpoint / 6)):
         return [0]
-    if (cx > (midpoint + (midpoint/6))):
+    if cx > (midpoint + (midpoint / 6)):
         return [2]
     elif y + h >= 0.90 * frame_size[1]:
         return [3]
@@ -82,7 +77,7 @@ def leftOrRight(face_cascade, midpoint, frame_size, withinRange):
 
 async def main():
     robot = await connect()
-    
+
     # Create instance of the rover class
     my_rover = Rover(robot)
 
@@ -173,7 +168,7 @@ async def main():
 
             if withinRange[0] != 1:
                 answer = leftOrRight(
-                    face_cascade, frame1.size[0]/2, frame1.size, withinRange
+                    face_cascade, frame1.size[0] / 2, frame1.size, withinRange
                 )
             if withinRange[0] != 1:
                 if answer[0] == 0:
@@ -195,33 +190,42 @@ async def main():
                     pastMove = "center"
                     await my_rover.base.move_straight(distance=-10, velocity=VELOCITY)
                 elif answer[0] == -1:
-                    if (pastMove == ""):
+                    if pastMove == "":
                         print("Randomly moving to look for objects.")
                         # Generate random movements (example: forward, backward, left, right)
                         random_movement = random.choice(
-                            ["forward", "backward", "left", "right"])
+                            ["forward", "backward", "left", "right"]
+                        )
                         if random_movement == "forward":
-                            await my_rover.base.move_straight(distance=10, velocity=VELOCITY)
+                            await my_rover.base.move_straight(
+                                distance=10, velocity=VELOCITY
+                            )
                         elif random_movement == "backward":
-                            await my_rover.base.move_straight(distance=-10, velocity=VELOCITY)
+                            await my_rover.base.move_straight(
+                                distance=-10, velocity=VELOCITY
+                            )
                         elif random_movement == "left":
                             await my_rover.base.spin(angle=5, velocity=VELOCITY)
                         elif random_movement == "right":
                             await my_rover.base.spin(angle=-5, velocity=VELOCITY)
-                    elif (pastMove == "right"):
+                    elif pastMove == "right":
                         await my_rover.base.spin(angle=5, velocity=VELOCITY)
                         pastMove = ""
-                    elif (pastMove == "left"):
+                    elif pastMove == "left":
                         await my_rover.base.spin(angle=-5, velocity=VELOCITY)
                         pastMove = ""
-                    elif (pastMove == "center"):
-                        await my_rover.base.move_straight(distance=-10, velocity=VELOCITY)
+                    elif pastMove == "center":
+                        await my_rover.base.move_straight(
+                            distance=-10, velocity=VELOCITY
+                        )
                         pastMove = ""
                     else:
-                        await my_rover.base.move_straight(distance=10, velocity=VELOCITY)
+                        await my_rover.base.move_straight(
+                            distance=10, velocity=VELOCITY
+                        )
                         pastMove = ""
             else:
-                print('STOP!')
+                print("STOP!")
                 await my_rover.base.stop()
 
             if takePicture:
