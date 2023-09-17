@@ -48,11 +48,17 @@ def leftOrRight(face_cascade, midpoint, frame_size, withinRange):
     (x, y, w, h) = largest
     # Need to test this stop logic here, will this even work?
     if w >= min_face_size and h >= min_face_size:
-        x_within_range = x <= 0.2 * \
-            frame_size[0] and x + w >= 0.95 * frame_size[0]
-        y_within_range = y <= 0.2 * \
-            frame_size[1] or y + h >= 0.95 * frame_size[1]
+        x_within_range = x <= 0.01 * \
+            frame_size[0] and x + w >= 0.99 * frame_size[0]
+        y_within_range = y <= 0.01 * \
+            frame_size[1] and y + h >= 0.99 * frame_size[1]
         print(x_within_range, y_within_range)
+        print(0.01 *
+              frame_size[0])
+        print(x + w >= 0.99 * frame_size[0])
+        print(y <= 0.01 *
+              frame_size[1])
+        print(y + h >= 0.99 * frame_size[1])
         if x_within_range and y_within_range:
             withinRange = 1
 
@@ -71,7 +77,7 @@ async def main():
     robot = await connect()
 
     roverBase = Base.from_robot(robot, "viam_base")
-    camera = Camera.from_robot(robot=robot, name="cam")
+    camera = Camera.from_robot(robot=robot, name="cam2")
 
     # Load the cascade
     face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
