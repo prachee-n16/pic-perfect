@@ -5,7 +5,7 @@ from viam.components.base import Base
 class Rover:
     def __init__(self, robot):
         self.robot = robot
-        self.camera = Camera.from_robot(robot=robot, name="cam")
+        self.camera = Camera.from_robot(robot=robot, name="cam2")
         self.roverBase = Base.from_robot(robot, "viam_base")
 
     async def capture_image(self, image_count):
