@@ -25,7 +25,6 @@ function App() {
           <Route path="/" element={<Gallery />} />
         </Routes>
       </Router>
-      <Footer />
     </ThemeProvider>
   );
 }

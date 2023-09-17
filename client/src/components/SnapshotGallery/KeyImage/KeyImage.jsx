@@ -25,10 +25,9 @@ const VerticalButtons = () => {
     color: "white",
   };
   const buttonContainerStyle = {
-    display: "flex",
-    flexDirection: "column", // Arrange buttons vertically
-    alignItems: "center", // Center buttons horizontally
-    mx: 4,
+    position: "absolute",
+    bottom: 20,
+    left: 10,
   };
 
   const handleButtonClick = () => {
@@ -90,8 +89,11 @@ const KeyImage = () => {
                 src={
                   isEnhanced
                     ? // RANA WHAT IS THE RIGHT NAME HERE
-                      require(`../../../images/enhanced-${selectedImage.img}`)
-                    : require(`../../../images/${selectedImage.img}`)
+                      require(`../../../corrected/${selectedImage.img.slice(
+                        0,
+                        -5
+                      )}_enhanced.jpeg`)
+                    : require(`../../../captures/${selectedImage.img}`)
                 } // Display the selected image
                 alt={selectedImage.title}
                 loading="lazy"
@@ -102,8 +104,8 @@ const KeyImage = () => {
           )}
         </Box>
         <Divider orientation="vertical" flexItem />
-        <VerticalButtons /> {/* Include the VerticalButtons component */}
       </Box>
+      <VerticalButtons /> {/* Include the VerticalButtons component */}
     </>
   );
 };
